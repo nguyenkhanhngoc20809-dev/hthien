@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Men's Day - Hoàng Thiên 💖</title>
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* Import Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Times+New+Roman&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: #dbeafe;
+            background-image: radial-gradient(#93c5fd 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            font-family: 'Comfortaa', cursive, sans-serif;
+            color: #5c3d2e;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23fbbf24'><path d='M12 .587l3.668 7.431 8.2 1.192-5.934 5.784 1.399 8.166L12 18.896l-7.333 3.864 1.399-8.166L.133 9.21l8.2-1.192z'/></svg>"), auto;
+        }
+
+        /* Floating Elements Container */
+        #floating-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-item {
+            position: absolute;
+            top: -50px;
+            animation: fall linear infinite;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(105vh) rotate(360deg);
+                opacity: 0.2;
+            }
+        }
+
+        /* Page Management */
+        .page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            max-width: 650px;
+            padding: 20px;
+            z-index: 2;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        h1, h2 {
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            color: #4a2c11;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #5c3d2e;
+        }
+
+        /* Page 1 Specifics */
+        .question-box {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(147, 197, 253, 0.4);
+            backdrop-filter: blur(5px);
+            border: 2px solid #ffffff;
+            width: 100%;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: #ffffff;
+            color: #5c3d2e;
+            border: 2px solid #bfdbfe;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-family: 'Comfortaa', cursive, sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .btn:hover {
+            background: #93c5fd;
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(147, 197, 253, 0.5);
+        }
+
+        .alert-msg {
+            color: #ef4444;
+            font-weight: bold;
+            margin-top: 15px;
+            min-height: 24px;
+            font-size: 0.95rem;
+        }
+
+        /* Decor Images */
+        .chiikawa-decor {
+            max-width: 140px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+            transition: transform 0.3s ease;
+        }
+
+        .chiikawa-decor:hover {
+            transform: scale(1.08) rotate(3deg);
+        }
+
+        /* Page 2 Specifics */
+        .gift-container {
+            position: relative;
+            cursor: pointer;
+            margin: 20px 0;
+        }
+
+        .gift-box {
+            width: 180px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 8px 15px rgba(0,0,0,0.15));
+        }
+
+        .gift-container:hover .gift-box {
+            transform: scale(1.05) shake;
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
+
+        .envelope-btn {
+            display: none;
+            margin-top: 20px;
+            animation: popUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 2px dashed #f472b6;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(244, 114, 182, 0.2);
+        }
+
+        .envelope-btn:hover {
+            transform: scale(1.05);
+            background: #ffffff;
+        }
+
+        .envelope-img {
+            width: 100px;
+            display: block;
+            margin: 0 auto 10px;
+        }
+
+        /* Page 3 Specifics */
+        .letter-card {
+            background: #fff;
+            padding: 35px 30px;
+            border-radius: 24px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            position: relative;
+            border: 3px solid #fed7aa;
+            background-image: radial-gradient(#fde68a 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .letter-content {
+            text-align: justify;
+            text-justify: inter-word;
+            font-size: 1.05rem;
+            line-height: 1.9;
+        }
+
+        /* Music Disc Widget */
+        .music-player {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 8px 15px 8px 8px;
+            border-radius: 50px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.6);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .music-player.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .disc {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #333;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation: spin 3s linear infinite;
+            animation-play-state: paused;
+            margin-right: 10px;
+        }
+
+        .disc.playing {
+            animation-play-state: running;
+        }
+
+        .disc::after {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: #93c5fd;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .volume-slider {
+            width: 70px;
+            accent-color: #60a5fa;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Elements -->
+    <div id="floating-container"></div>
+
+    <!-- PAGE 1 -->
+    <div id="page1" class="page active">
+        <img src="image_16.png" class="chiikawa-decor" alt="Chiikawa Heart">
+        <div class="question-box">
+            <h1 style="font-size: 2rem;">Nè bạn, biết hôm nay là ngày gì hông???</h1>
+            <div class="btn-group">
+                <button class="btn" onclick="wrongAnswer()">Ụa ngày gì vậy taa</button>
+                <button class="btn" onclick="correctAnswer()">Men's Day chớ dì nữa</button>
+            </div>
+            <div id="alert-text" class="alert-msg"></div>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div id="page2" class="page">
+        <h1 style="font-size: 2.5rem; color: #1e3a8a;">HAPPY MEN’S DAY</h1>
+        
+        <div class="gift-container" onclick="openGift()">
+            <img id="gift-img" src="image_11.png" class="gift-box" alt="Gift Box">
+        </div>
+
+        <p id="gift-hint" style="font-size: 0.95rem; color: #6b7280; margin-top: -10px;">(Bấm vào hộp quà để mở nè! ✨)</p>
+
+        <div id="envelope-wrapper" class="envelope-btn" onclick="goToPage3()">
+            <img src="image_12.png" class="envelope-img" alt="Envelope">
+            <h2 style="font-size: 1.4rem; margin: 0; color: #d97706;">Letter for you 💖</h2>
+        </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div id="page3" class="page">
+        <div class="letter-card">
+            <img src="image_13.png" style="width: 100%; max-width: 380px; margin-bottom: 20px; border-radius: 16px;" alt="Chiikawa Frame">
+            <h2 style="font-size: 1.8rem; color: #92400e;">Món quà nho nhỏ gửi đến Hoàng Thiên💖</h2>
+            <div class="letter-content">
+                <p>Chúc bạn luôn giữ được nụ cười tươi trên môi, hạnh phúc và gặp nhiều may mắn. Hy vọng những điều tốt đẹp nhất sẽ đến với bạn, không chỉ hôm nay mà còn trong những năm tháng sau này.</p>
+                <p style="margin-top: 10px;">Mong rằng con đường bạn đi luôn rải đầy nắng hoa, mọi giông bão đều hóa dịu dàng. Nhớ ăn ngoan, ngủ kĩ, giữ gìn sức khỏe nha bạn!</p>
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <img src="image_14.png" style="width: 70px; display: inline-block;" alt="Chiikawa Happy">
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Player Controller -->
+    <div id="music-player" class="music-player">
+        <div id="disc" class="disc" onclick="toggleMusic()"></div>
+        <input type="range" class="volume-slider" id="volume" min="0" max="1" step="0.1" value="0.8" oninput="changeVolume(this.value)">
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="bg-music" loop>
+        <source src="v1c044g50000d938k0vog65ndf5tlo00_2.m4a" type="audio/mp4">
+    </audio>
+
+    <script>
+        // Floating hearts and sparkles generator
+        function createFloatingItems() {
+            const container = document.getElementById('floating-container');
+            const items = ['💖', '✨', '⭐', '🌸', '💕'];
+            
+            for (let i = 0; i < 25; i++) {
+                const item = document.createElement('div');
+                item.className = 'floating-item';
+                item.innerText = items[Math.floor(Math.random() * items.length)];
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                item.style.animationDelay = Math.random() * 5 + 's';
+                item.style.fontSize = (Math.random() * 15 + 12) + 'px';
+                container.appendChild(item);
+            }
+        }
+        createFloatingItems();
+
+        // Audio Handler
+        const music = document.getElementById('bg-music');
+        const disc = document.getElementById('disc');
+        const musicPlayer = document.getElementById('music-player');
+
+        function playAudio() {
+            music.play().then(() => {
+                disc.classList.add('playing');
+            }).catch(() => {});
+        }
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                disc.classList.add('playing');
+            } else {
+                music.pause();
+                disc.classList.remove('playing');
+            }
+        }
+
+        function changeVolume(val) {
+            music.volume = val;
+        }
+
+        // Page Navigation
+        function wrongAnswer() {
+            document.getElementById('alert-text').innerText = 'Ê giỡn mặt hã? Chọn lại coi 😤';
+        }
+
+        function correctAnswer() {
+            document.getElementById('page1').classList.remove('active');
+            document.getElementById('page2').classList.add('active');
+            musicPlayer.classList.add('visible');
+            playAudio();
+        }
+
+        let isGiftOpened = false;
+        function openGift() {
+            if (isGiftOpened) return;
+            isGiftOpened = true;
+
+            document.getElementById('gift-hint').style.display = 'none';
+            
+            // Confetti Cannon
+            var duration = 5 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#f472b6', '#60a5fa', '#fbbf24']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#f472b6', '#60a5fa', '#fbbf24']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                } else {
+                    document.getElementById('envelope-wrapper').style.display = 'block';
+                }
+            })();
+        }
+
+        function goToPage3() {
+            document.getElementById('page2').classList.remove('active');
+            document.getElementById('page3').classList.add('active');
+        }
+    </script>
+</body>
+</html>
